@@ -1,4 +1,3 @@
-import sys
 import argparse
 import logging
 import time
@@ -124,7 +123,6 @@ def load_settings(filename: str, contest_name: str) -> None:
     if contest_name:
         key = 'Contest-' + contest_name
         if  config.has_section(key):
-            contest_ini = config[key]
             settings.update(dict(config[key].items()))
         else:
             logging.info(f'No section [{key}], using settings from [Contest] and [User]')
