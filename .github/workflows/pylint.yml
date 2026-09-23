@@ -12,6 +12,6 @@ jobs:
     - name: Analysing the code with pylint
       uses: Silleellie/pylint-github-action@v3
       with:
-        lint-path: cwkd
+        lint-path: src
         python-version: 3.13
 
