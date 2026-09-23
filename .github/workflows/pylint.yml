@@ -1,0 +1,17 @@
+name: Pylint
+
+on: [push]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Analysing the code with pylint
+      uses: Silleellie/pylint-github-action@v3
+      with:
+        lint-path: cwkd
+        python-version: 3.13
+
