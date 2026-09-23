@@ -52,7 +52,8 @@ def build_payload(settings: dict, summaries: dict, contest: Contest) -> bytes:
     fields = {
         'contest': contest.cabrillo_name,
         'call': settings['call'].upper(),
-        'ops': settings.get('operators', '').upper(), # note: optional + clashes with 'ops' of class data
+        # note: 'ops' is optional + would clash with 'ops' of class data
+        'ops': settings.get('operators', '').upper(),
         'score': str(score),
         'soft': 'TLF',
         'version': '1.5',
