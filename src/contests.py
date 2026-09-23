@@ -1,8 +1,10 @@
-"""
-based on https://contestonlinescore.com/settings/
-"""
+# pylint: disable=too-many-lines
 
 from dataclasses import dataclass
+
+"""
+contest definitions based on https://contestonlinescore.com/settings/
+"""
 
 @dataclass
 class Contest:
@@ -2016,4 +2018,3 @@ CONTESTS = [
         mult1_type = 'state', # Club numbers
     ),
 ]
-
