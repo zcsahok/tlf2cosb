@@ -24,7 +24,7 @@ def _count_mults(mult_list: list,
                 mult2 += 1
             else:
                 mult1 += 1
-    
+
     return (mult1, mult2)
 
 

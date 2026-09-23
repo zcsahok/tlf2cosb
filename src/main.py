@@ -144,7 +144,7 @@ def load_settings(filename: str, contest_name: str) -> None:
     if not contest:
         logging.error(f'Contest "{contest_name}" not found')
         raise SystemExit
-        
+
     logging.info(f'{contest}')
 
     assisted = 'ASSISTED'
@@ -238,7 +238,7 @@ def main():
             raise SystemExit
 
         build_total(summaries)
-        
+
         payload = cosb.build_payload(settings, summaries, contest)
 
         if args.no_submit:

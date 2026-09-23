@@ -47,7 +47,7 @@ def build_payload(settings: dict, summaries: dict, contest: Contest) -> bytes:
 
     # 1. Initialize root node
     root = ET.Element('dynamicresults')
-    
+
     # 2. Map standard fields and class information
     fields = {
         'contest': contest.cabrillo_name,
@@ -59,7 +59,7 @@ def build_payload(settings: dict, summaries: dict, contest: Contest) -> bytes:
         'version': '1.5',
         'timestamp': datetime.datetime.now(datetime.UTC).strftime('%Y-%m-%d %H:%M:%S')
     }
-    
+
     for key, val in fields.items():
         if val:
             element = ET.SubElement(root, key)
