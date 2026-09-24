@@ -4,7 +4,10 @@ tlf2cosb.pyz: src/*.py
 
 release: tlf2cosb.pyz
 
+test:
+	bats test/test.bats
+
 clean:
 	rm -f *.pyz
 
-.PHONY: clean release
+.PHONY: clean release test

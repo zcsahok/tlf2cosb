@@ -1,10 +1,6 @@
 name: Makefile CI
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+on: [push]
 
 jobs:
   build:
@@ -12,13 +8,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@main
+      - name: Check out source
+        uses: actions/checkout@main
 
-    - name: Build
-      run: make
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential bats bats-assert
 
-#    - name: Run check
-#      run: make check
+      - name: Build binary
+        run: make
+
+      - name: Run tests
+        run: make test
 
 #    - name: Run distcheck
 #      run: make distcheck

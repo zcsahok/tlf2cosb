@@ -74,7 +74,7 @@ def process_args():
     parsed_args, unparsed_args = parser.parse_known_args()
     if unparsed_args:
         parser.print_help()
-        raise SystemExit
+        raise SystemExit(1)
 
     return parsed_args
 
@@ -85,7 +85,7 @@ def load_settings_and_contest(filename: str, contest_name: str) -> tuple:
 
     if not config.has_section('User'):
         logging.error('File %s contains no [User] section', filename)
-        raise SystemExit
+        raise SystemExit(1)
 
     settings = dict(config['User'].items())
 
@@ -102,7 +102,7 @@ def load_settings_and_contest(filename: str, contest_name: str) -> tuple:
 
     if 'name' not in settings:
         logging.error('Could not determine contest name')
-        raise SystemExit
+        raise SystemExit(1)
 
     contest_name = settings['name']
     logging.debug('contest_name=%s', contest_name)
@@ -111,11 +111,11 @@ def load_settings_and_contest(filename: str, contest_name: str) -> tuple:
         contest = contests.find(contest_name)
     except ValueError:
         logging.error('Contest "%s" is ambiguous', contest_name)
-        raise SystemExit
+        raise SystemExit(1)
 
     if not contest:
         logging.error('Contest "%s" not found', contest_name)
-        raise SystemExit
+        raise SystemExit(1)
 
     logging.info(contest)
 
@@ -132,7 +132,7 @@ def load_settings_and_contest(filename: str, contest_name: str) -> tuple:
         settings.update(parse_category(category))
     except ValueError:
         logging.error('Invalid category designator "%s"', category)
-        raise SystemExit
+        raise SystemExit(1)
 
     return settings, contest
 
@@ -170,7 +170,7 @@ def main():
     try:
         cosb.build_class_data(settings)
     except ValueError:
-        raise SystemExit
+        raise SystemExit(1)
 
     if args.logfile:
         logfile = args.logfile
@@ -181,12 +181,12 @@ def main():
     try:
         mult1_re, mult2_re = contests.compile_mult_patterns(contest)
     except ValueError:
-        raise SystemExit
+        raise SystemExit(1)
 
     while True:
         summaries = tlfparser.build_log_summary(logfile, mult1_re, mult2_re)
         if not summaries:
-            raise SystemExit
+            raise SystemExit(1)
 
         build_total(summaries)
 
@@ -195,7 +195,7 @@ def main():
         if args.no_submit:
             logging.info(payload)
             logging.warning('Submission disabled; exiting.')
-            raise SystemExit
+            raise SystemExit(0)
 
         logging.debug(payload)
         cosb.submit(settings['call'], settings['password'], payload)
