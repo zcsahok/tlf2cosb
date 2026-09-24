@@ -61,7 +61,7 @@ def process_args():
     parser = argparse.ArgumentParser(description='TLF to Contest Online Score Board converter')
 
     parser.add_argument('-d', '--debug', action='store_true',
-                    help='debug logging')
+                    help='debug log level')
     parser.add_argument('-n', '--no-submit', action='store_true',
                     help='do not submit score, just display XML (dry run)')
     parser.add_argument('-c', '--contest', type=str, metavar='CONTEST',

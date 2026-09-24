@@ -54,7 +54,10 @@ def _map_dig_mode(mode: str, digital_mode: str) -> str:
 
 def build_payload(settings: dict, summaries: dict, contest: Contest) -> bytes:
     total_all = summaries[('total','ALL')]
-    score = total_all.points * total_all.mults()
+    if contest.mult1_type:  # contest uses multipliers
+        score = total_all.points * total_all.mults()
+    else:
+        score = total_all.points
     logging.info('score=%s  %s', score, total_all)
 
     # 1. Initialize root node
