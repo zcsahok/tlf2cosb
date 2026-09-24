@@ -1,6 +1,6 @@
 setup() {
-    load '/usr/lib/bats/bats-support/load'
-    load '/usr/lib/bats/bats-assert/load'
+    bats_load_library bats-support
+    bats_load_library bats-assert
 
     # get the containing directory of this file
     # use $BATS_TEST_FILENAME instead of ${BASH_SOURCE[0]} or $0,
@@ -11,7 +11,7 @@ setup() {
 }
 
 #
-# NOTE: all test use dry-run mode (-n) to avoid actual score submission
+# NOTE: all tests use dry-run mode (-n) to avoid actual score submission
 #
 
 @test "Unknown contest" {
