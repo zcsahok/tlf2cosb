@@ -43,7 +43,7 @@ def build_log_summary(logfile: str,
             for line in f.readlines():
                 lines.append(line.rstrip())
     except OSError as e:
-        logging.error(f'Unable to read log file "{logfile}: {e}"')
+        logging.error('Unable to read log file: %s', e)
         return None
 
     for line in lines:

@@ -3,6 +3,8 @@ contest definitions based on https://contestonlinescore.com/settings/
 """
 # pylint: disable=too-many-lines
 
+import logging
+import re
 from dataclasses import dataclass
 
 
@@ -16,7 +18,70 @@ class Contest:
     mult2_pattern: str = None
 
 
-CONTESTS = [
+def find(name: str) -> Contest:
+    name_lower = name.lower()
+
+    contest = None
+
+    # 1. try to find it by long name
+    for c in _CONTESTS:
+        if c.name.lower() == name_lower:
+            if contest:
+                raise ValueError()
+            contest = c
+
+    if contest:
+        return contest
+
+    # 2. try to find it by Cabrillo name
+    for c in _CONTESTS:
+        if c.cabrillo_name.lower() == name_lower:
+            if contest:
+                raise ValueError()
+            contest = c
+
+    if contest:
+        return contest
+
+    # 3. last resort: look for a substring in either long or Cabrillo name
+    for c in _CONTESTS:
+        if (name_lower in c.name.lower()
+                or name_lower in c.cabrillo_name.lower()):
+            if contest:
+                raise ValueError()
+            contest = c
+
+    return contest
+
+
+def compile_mult_patterns(contest: Contest) -> tuple:
+    mult1_pattern = None
+    if contest.mult1_type:
+        mult1_pattern = contest.mult1_pattern
+
+    mult2_pattern = None
+    if contest.mult2_type:
+        mult2_pattern = contest.mult2_pattern
+
+        if not mult1_pattern and not mult2_pattern:
+            logging.warning('Two multipliers used, but no patterns defined')
+
+    if mult1_pattern and mult2_pattern:
+        logging.error('Invalid contest definition: both mult patterns must not be set')
+        raise ValueError()
+
+    mult1_re = None
+    if mult1_pattern:
+        mult1_re = re.compile(mult1_pattern)
+
+    mult2_re = None
+    if mult2_pattern:
+        mult2_re = re.compile(mult2_pattern)
+
+    return (mult1_re, mult2_re)
+
+
+_CONTESTS = [
     Contest(
         name = '10-10 Day Sprint', cabrillo_name = '10-10',
     ),

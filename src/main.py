@@ -5,8 +5,8 @@ from datetime import timedelta
 import configparser
 import re
 
-from contests import Contest, CONTESTS
 from summary import Summary, BANDS, MODES
+import contests
 import tlfparser
 import cosb
 
@@ -21,40 +21,15 @@ def parse_boolean(s: str) -> bool:
     raise ValueError()
 
 
-def find_contest(name: str) -> Contest:
-    name_lower = name.lower()
-
-    contest = None
-
-    # 1. try to find it by long name
-    for c in CONTESTS:
-        if c.name.lower() == name_lower:
-            if contest:
-                raise ValueError()
-            contest = c
-
-    if contest:
-        return contest
-
-    # 2. try to find it by Cabrillo name
-    for c in CONTESTS:
-        if c.cabrillo_name.lower() == name_lower:
-            if contest:
-                raise ValueError()
-            contest = c
-
-    return contest
-
-
-CATEGORY_PATTERN = re.compile(r'^SO(?P<band>(AB|\d{2,3}))-(?P<power>(LP|HP|QRP))$')
+_CATEGORY_PATTERN = re.compile(r'^SO(?P<band>(AB|\d{2,3}))-(?P<power>(LP|HP|QRP))$')
 
 def parse_category(cat: str) -> dict:
-    result = dict()
+    result = {}
     if not cat:
         return result
 
     cat = cat.strip().upper()
-    m = CATEGORY_PATTERN.match(cat)
+    m = _CATEGORY_PATTERN.match(cat)
     if not m:
         raise ValueError()
 
@@ -103,18 +78,15 @@ def process_args():
 
     return parsed_args
 
-settings = None
-contest = None
 
-def load_settings(filename: str, contest_name: str) -> None:
+def load_settings_and_contest(filename: str, contest_name: str) -> tuple:
     config = configparser.ConfigParser()
     config.read(filename)
 
     if not config.has_section('User'):
-        logging.error(f'File {filename} contains no [User] section')
+        logging.error('File %s contains no [User] section', filename)
         raise SystemExit
 
-    global settings
     settings = dict(config['User'].items())
 
     if config.has_section('Contest'):
@@ -125,27 +97,27 @@ def load_settings(filename: str, contest_name: str) -> None:
         if  config.has_section(key):
             settings.update(dict(config[key].items()))
         else:
-            logging.info(f'No section [{key}], using settings from [Contest] and [User]')
+            logging.info('No section [%s], using settings from [Contest] and [User]', key)
             settings['name'] = contest_name
 
     if 'name' not in settings:
-        logging.error(f'Could not determine contest name')
+        logging.error('Could not determine contest name')
         raise SystemExit
 
     contest_name = settings['name']
-    logging.debug(f'{contest_name=}')
-    global contest
+    logging.debug('contest_name=%s', contest_name)
+
     try:
-        contest = find_contest(contest_name)
+        contest = contests.find(contest_name)
     except ValueError:
-        logging.error(f'Contest "{contest_name}" is ambiguous')
+        logging.error('Contest "%s" is ambiguous', contest_name)
         raise SystemExit
 
     if not contest:
-        logging.error(f'Contest "{contest_name}" not found')
+        logging.error('Contest "%s" not found', contest_name)
         raise SystemExit
 
-    logging.info(f'{contest}')
+    logging.info(contest)
 
     assisted = 'ASSISTED'
     if not parse_boolean(settings.get('assisted', 'yes')):
@@ -154,13 +126,15 @@ def load_settings(filename: str, contest_name: str) -> None:
     settings['assisted'] = assisted
 
     category = settings.get('category')
-    logging.debug(f'{category=}')
+    logging.debug('category=%s', category)
 
     try:
         settings.update(parse_category(category))
     except ValueError:
-        logging.error('Invalid category designator')
+        logging.error('Invalid category designator "%s"', category)
         raise SystemExit
+
+    return settings, contest
 
 
 def build_total(summaries: dict) -> None:
@@ -171,34 +145,10 @@ def build_total(summaries: dict) -> None:
             k = (band,mode)
             s = summaries[k]
             if s.qsos:
-                logging.debug(f'{k}: {s}')
+                logging.debug('%s: %s', k, s)
                 total_all.add(s)
 
     summaries[('total','ALL')] = total_all
-
-
-def compile_mult_patterns(contest: Contest) -> tuple:
-    mult1_pattern = None
-    if contest.mult1_type:
-        mult1_pattern = contest.mult1_pattern
-
-    mult2_pattern = None
-    if contest.mult2_type:
-        mult2_pattern = contest.mult2_pattern
-
-    if mult1_pattern and mult2_pattern:
-        logging.error('Invalid contest definition: both mult patterns must not be set')
-        raise SystemExit
-
-    mult1_re = None
-    if mult1_pattern:
-        mult1_re = re.compile(mult1_pattern)
-
-    mult2_re = None
-    if mult2_pattern:
-        mult2_re = re.compile(mult2_pattern)
-
-    return (mult1_re, mult2_re)
 
 
 def main():
@@ -211,12 +161,11 @@ def main():
     logging.basicConfig(format='%(asctime)s %(levelname)s - %(message)s',
         level=log_level)
 
-    logging.info(f'Loading {args.inifile}')
+    logging.info('Loading %s', args.inifile)
 
-    load_settings(args.inifile, args.contest)
+    settings, contest = load_settings_and_contest(args.inifile, args.contest)
 
-    global settings
-    logging.debug(f'{settings=}')
+    logging.debug('settings=%s', settings)
 
     try:
         cosb.build_class_data(settings)
@@ -227,10 +176,12 @@ def main():
         logfile = args.logfile
     else:
         logfile = settings['logfile']
-    logging.info(f'Log file: {logfile}')
+    logging.info('Log file: %s', logfile)
 
-    global contest
-    mult1_re, mult2_re = compile_mult_patterns(contest)
+    try:
+        mult1_re, mult2_re = contests.compile_mult_patterns(contest)
+    except ValueError:
+        raise SystemExit
 
     while True:
         summaries = tlfparser.build_log_summary(logfile, mult1_re, mult2_re)
@@ -243,7 +194,7 @@ def main():
 
         if args.no_submit:
             logging.info(payload)
-            logging.warn('Submission disabled; exiting.')
+            logging.warning('Submission disabled; exiting.')
             raise SystemExit
 
         logging.debug(payload)
