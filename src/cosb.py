@@ -99,9 +99,9 @@ def submit(callsign: str, password: str, xml_data: bytes) -> None:
         if response.status_code == 200:
             if 'OK-Full' in text:
                 logging.info('Submitted OK')
-                logging.debug(f'text: {text}')
+                logging.debug('text: %s', text)
             else:
-                logging.warning(f'Submitted with error: {text}')
+                logging.warning('Submitted with error: %s', text)
 
         else:
             logging.error(f'Score submission failed. Status: {response.status_code}, text: {text}')

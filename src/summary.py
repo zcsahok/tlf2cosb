@@ -26,4 +26,3 @@ class Summary:
 BANDS = ['160', '80', '40', '20', '15', '10']
 
 MODES = ['CW', 'SSB', 'DIG']
-

@@ -250,4 +250,3 @@ def main():
         cosb.submit(settings['call'], settings['password'], payload)
 
         time.sleep(timedelta(minutes=2).total_seconds())
-

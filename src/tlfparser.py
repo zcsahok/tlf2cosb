@@ -31,18 +31,18 @@ def _count_mults(mult_list: list,
 def build_log_summary(logfile: str,
         mult1_re: re.Pattern, mult2_re: re.Pattern) -> dict:
 
-    summaries = dict()
+    summaries = {}
     for band in BANDS:
         for mode in MODES:
             summaries[(band,mode)] = Summary()
 
-    lines = list()
+    lines = []
 
     try:
         with open(expanduser(logfile), mode='r') as f:
             for line in f.readlines():
                 lines.append(line.rstrip())
-    except Exception as e:
+    except OSError as e:
         logging.error(f'Unable to read log file "{logfile}: {e}"')
         return None
 
