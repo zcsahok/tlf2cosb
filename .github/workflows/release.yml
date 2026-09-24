@@ -30,7 +30,7 @@ jobs:
           file tlf2cosb.pyz
 
       - name: Upload release asset
-        uses: softprops/action-gh-release@main
+        uses: softprops/action-gh-release@v3
         with:
           files: tlf2cosb.pyz
           generate_release_notes: true
