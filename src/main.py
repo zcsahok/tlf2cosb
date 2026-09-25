@@ -119,6 +119,11 @@ def load_settings_and_contest(filename: str, contest_name: str) -> tuple:
 
     logging.info(contest)
 
+    if 'rtty' in contest_name.lower():
+        logging.info('Auto-switching to RTTY')
+        settings['mode'] = 'RTTY'
+        settings['digimode'] = 'RTTY'
+
     assisted = 'ASSISTED'
     if not parse_boolean(settings.get('assisted', 'yes')):
         assisted = 'NON-ASSISTED'
@@ -200,4 +205,6 @@ def main():
         logging.debug(payload)
         cosb.submit(settings['call'], settings['password'], payload)
 
-        time.sleep(timedelta(minutes=2).total_seconds())
+        sleep_delta = timedelta(minutes=2)
+        logging.debug('Sleeping for %s', sleep_delta)
+        time.sleep(sleep_delta.total_seconds())

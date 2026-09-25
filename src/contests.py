@@ -509,6 +509,7 @@ _CONTESTS = [
         name = 'CQ WW RTTY', cabrillo_name = 'CQ-WW-RTTY',
         mult1_type = 'country', # DXCC+S/P
         mult2_type = 'zone', # Zones
+        mult2_pattern = '[0-9]{2}',
     ),
     Contest(
         name = 'CQ WW SSB', cabrillo_name = 'CQ-WW-SSB',

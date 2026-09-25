@@ -1,5 +1,5 @@
 [![Makefile CI](https://github.com/zcsahok/tlf2cosb/actions/workflows/makefile.yml/badge.svg)](https://github.com/zcsahok/tlf2cosb/actions/workflows/makefile.yml)
-![pylint](https://img.shields.io/badge/PyLint-9.16-yellow?logo=python&logoColor=white)
+![pylint](https://img.shields.io/badge/PyLint-9.18-yellow?logo=python&logoColor=white)
 
 # tlf2cosb - TLF to Contest Online Score Board converter
 
@@ -13,7 +13,53 @@ submission and live score reporting.
 - Periodically sends score information to Contest Online Score Board
 - Supports the ~500 contests listed on COSB
 - Configurable through INI files
-- Lightweight Python implementation
+- Lightweight Python implementation packaged as a single executable file
+
+
+## Usage
+
+### Options
+
+```
+$ ./tlf2cosb.pyz --help
+usage: tlf2cosb.pyz [-h] [-d] [-n] [-c CONTEST] [-l LOGFILE] [-i INIFILE]
+
+TLF to Contest Online Score Board converter
+
+options:
+  -h, --help            show this help message and exit
+  -d, --debug           debug log level
+  -n, --no-submit       do not submit score, just display XML (dry run)
+  -c CONTEST, --contest CONTEST
+                        contest name (default: defined by ini file)
+  -l LOGFILE, --logfile LOGFILE
+                        TLF log file (default: defined by ini file)
+  -i INIFILE, --inifile INIFILE
+                        configuration file to use (default: tlf2cosb.ini)
+```
+
+### Quick start
+
+Download the `tlf2cosb.pyz` binary from the latest release and make it executable.
+Alternatively clone this repo and run `make` to build the pyz (zipapp) file.
+
+Copy `minimal.ini` to `tlf2cosb.ini` and update callsign, password, category
+and mode accordingly.
+
+Set up TLF for your contest and start it to create a log file (e.g. `~/hamstuff/tlf/my.log`).
+
+Run the converter first in dry-run mode as
+```
+./tlf2cosb.pyz -n -l ~/hamstuff/tlf/my.log -c <contest>
+```
+where `<contest>` identifies your contest (e.g. `mwc`).
+
+Observe the output and ensure that the run was successful, then log some test QSOs and execute the converter again.
+If everything looks good, remove the `-n` (dry-run) option to actually submit your score to COSB.
+
+If you encounter any issues, try the `-d` (debug) option to see additional diagnostic information.
+
+For more complex setups, use the original `tlf2cosb.ini` file as a starting point.
 
 ## License
 
