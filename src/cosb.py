@@ -101,7 +101,7 @@ def build_payload(settings: dict, summaries: dict, contest: Contest) -> bytes:
     return ET.tostring(root, encoding='utf-8')
 
 
-def submit(callsign: str, password: str, xml_data: bytes) -> None:
+def submit(callsign: str, password: str, xml_data: bytes) -> str:
     try:
         auth = HTTPBasicAuth(callsign, password)
         response = requests.post(_URL, data=xml_data, headers=_HEADERS, auth=auth, timeout=10)
@@ -116,5 +116,8 @@ def submit(callsign: str, password: str, xml_data: bytes) -> None:
         else:
             logging.error('Score submission failed. Status: %s, text: %s',
                 response.status_code, text)
+
+        return text
     except requests.exceptions.RequestException as err:
         logging.error('Network error: %s', err)
+        return str(err)

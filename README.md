@@ -41,7 +41,7 @@ options:
 ### Quick start
 
 Download the `tlf2cosb.pyz` binary from the latest release and make it executable.
-Alternatively clone this repo and run `make` to build the pyz (zipapp) file.
+Alternatively, clone this repo and run `make` to build the `.pyz` (zipapp) file.
 
 Copy `minimal.ini` to `tlf2cosb.ini` and update callsign, password, category
 and mode accordingly.

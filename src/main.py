@@ -203,7 +203,10 @@ def main():
             raise SystemExit(0)
 
         logging.debug(payload)
-        cosb.submit(settings['call'], settings['password'], payload)
+        msg = cosb.submit(settings['call'], settings['password'], payload)
+        if 'Contest is closed or is not valid' in msg:
+            logging.error('Exiting.')
+            raise SystemExit(1)
 
         sleep_delta = timedelta(minutes=2)
         logging.debug('Sleeping for %s', sleep_delta)
