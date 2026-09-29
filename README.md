@@ -1,5 +1,5 @@
 [![Makefile CI](https://github.com/zcsahok/tlf2cosb/actions/workflows/makefile.yml/badge.svg)](https://github.com/zcsahok/tlf2cosb/actions/workflows/makefile.yml)
-![pylint](https://img.shields.io/badge/PyLint-9.18-yellow?logo=python&logoColor=white)
+![pylint](https://img.shields.io/badge/PyLint-9.19-yellow?logo=python&logoColor=white)
 
 # tlf2cosb - TLF to Contest Online Score Board converter
 
@@ -41,7 +41,7 @@ options:
 ### Quick start
 
 Download the `tlf2cosb.pyz` binary from the latest release and make it executable.
-Alternatively clone this repo and run `make` to build the pyz (zipapp) file.
+Alternatively, clone this repo and run `make` to build the `.pyz` (zipapp) file.
 
 Copy `minimal.ini` to `tlf2cosb.ini` and update callsign, password, category
 and mode accordingly.
