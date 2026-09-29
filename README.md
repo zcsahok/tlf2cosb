@@ -1,5 +1,5 @@
 [![Makefile CI](https://github.com/zcsahok/tlf2cosb/actions/workflows/makefile.yml/badge.svg)](https://github.com/zcsahok/tlf2cosb/actions/workflows/makefile.yml)
-![pylint](https://img.shields.io/badge/PyLint-9.18-yellow?logo=python&logoColor=white)
+![pylint](https://img.shields.io/badge/PyLint-9.19-yellow?logo=python&logoColor=white)
 
 # tlf2cosb - TLF to Contest Online Score Board converter
 
