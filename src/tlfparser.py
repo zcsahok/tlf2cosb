@@ -49,7 +49,7 @@ def build_log_summary(logfile: str,
     for line in lines:
         band = line[0:3].strip()
         mode = line[3:6].strip()
-        point = int(line[76:78])
+        point = int(line[76:80])
         mult_str = line[68:76]  # FIXME: correct start position
         mult_list = mult_str.strip().split()
         mult1, mult2 = _count_mults(mult_list, mult1_re, mult2_re)
