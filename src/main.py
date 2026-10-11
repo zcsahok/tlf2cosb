@@ -188,26 +188,30 @@ def main():
     except ValueError:
         raise SystemExit(1)
 
-    while True:
-        summaries = tlfparser.build_log_summary(logfile, mult1_re, mult2_re)
-        if not summaries:
-            raise SystemExit(1)
+    try:
+        while True:
+            summaries = tlfparser.build_log_summary(logfile, mult1_re, mult2_re)
+            if not summaries:
+                raise SystemExit(1)
 
-        build_total(summaries)
+            build_total(summaries)
 
-        payload = cosb.build_payload(settings, summaries, contest)
+            payload = cosb.build_payload(settings, summaries, contest)
 
-        if args.no_submit:
-            logging.info(payload)
-            logging.warning('Submission disabled; exiting.')
-            raise SystemExit(0)
+            if args.no_submit:
+                logging.info(payload)
+                logging.warning('Submission disabled; exiting.')
+                raise SystemExit(0)
 
-        logging.debug(payload)
-        msg = cosb.submit(settings['call'], settings['password'], payload)
-        if 'Contest is closed or is not valid' in msg:
-            logging.error('Exiting.')
-            raise SystemExit(1)
+            logging.debug(payload)
+            msg = cosb.submit(settings['call'], settings['password'], payload)
+            if 'Contest is closed or is not valid' in msg:
+                logging.error('Exiting.')
+                raise SystemExit(1)
 
-        sleep_delta = timedelta(minutes=2)
-        logging.debug('Sleeping for %s', sleep_delta)
-        time.sleep(sleep_delta.total_seconds())
+            sleep_delta = timedelta(minutes=2)
+            logging.debug('Sleeping for %s', sleep_delta)
+            time.sleep(sleep_delta.total_seconds())
+
+    except KeyboardInterrupt:
+        pass
