@@ -68,7 +68,7 @@ setup() {
     refute_output --partial 'CW'
 }
 
-@test "CQ WW RTTY (two mults, auto rtty switch, no options)" {
+@test "CQ WW RTTY (two mults, auto mult2 pattern, auto rtty switch, no options)" {
     run tlf2cosb.pyz -n -i $DIR/cq_ww_rtty.ini
     assert_success
     assert_output --partial '<contest>CQ-WW-RTTY</contest>'

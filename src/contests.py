@@ -53,6 +53,12 @@ def find(name: str) -> Contest:
 
     return contest
 
+def auto_mult2_pattern(mult_type: str) -> str:
+    """ provide a sensible default pattern for mult2 based on its type """
+    if mult_type == 'zone':
+        return '[0-9]{2}'   # ITU or CQ zone
+    return None
+
 
 def compile_mult_patterns(contest: Contest) -> tuple:
     mult1_pattern = None
@@ -61,7 +67,10 @@ def compile_mult_patterns(contest: Contest) -> tuple:
 
     mult2_pattern = None
     if contest.mult2_type:
-        mult2_pattern = contest.mult2_pattern
+        if contest.mult2_pattern:
+            mult2_pattern = contest.mult2_pattern
+        else:
+            mult2_pattern = auto_mult2_pattern(contest.mult2_type)
 
         if not mult1_pattern and not mult2_pattern:
             logging.warning('Two multipliers used, but no patterns defined')
@@ -509,7 +518,6 @@ _CONTESTS = [
         name = 'CQ WW RTTY', cabrillo_name = 'CQ-WW-RTTY',
         mult1_type = 'country', # DXCC+S/P
         mult2_type = 'zone', # Zones
-        mult2_pattern = '[0-9]{2}',
     ),
     Contest(
         name = 'CQ WW SSB', cabrillo_name = 'CQ-WW-SSB',
